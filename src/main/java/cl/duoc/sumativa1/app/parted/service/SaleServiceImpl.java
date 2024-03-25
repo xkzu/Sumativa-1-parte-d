@@ -15,7 +15,11 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getDailyEarnings(LocalDate date) {
+        //se crea una lista y se almacenan las ventas desde nuestra bd en memoria
         List<Sale> allSales = getSales();
+
+        //se convierte la lista en un stream, luego se aplica un filtro en caso de que la fecha sea correcta
+        //y finalmente lo convierte en lista de nuevo
         return allSales.stream()
                 .filter(sale -> sale.getSaleTime().toLocalDate().isEqual(date))
                 .toList();

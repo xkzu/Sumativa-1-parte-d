@@ -33,14 +33,18 @@ public class SalesController {
 
     @GetMapping("/earnings/daily/{date}")
     public ResponseEntity<SaleResponse> getDailyEarnings(
+            //se le asigna el formato de la fecha que se requiere como argumento
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
+        //se obtienen las ventas desde el service
         List<Sale> dailySales = saleService.getDailyEarnings(date);
 
+        //se calculan las ventas para dar un total ganado
         double totalEarnings = dailySales.stream()
                 .mapToDouble(Sale::getAmount)
                 .sum();
 
+        //se retorna con respuesta 200
         return ResponseEntity.ok(new SaleResponse(dailySales, totalEarnings));
     }
 
