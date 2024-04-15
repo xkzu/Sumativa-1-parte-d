@@ -2,6 +2,7 @@ package cl.duoc.sumativa1.app.parted.controller;
 
 import cl.duoc.sumativa1.app.parted.model.Sale;
 import cl.duoc.sumativa1.app.parted.model.SaleResponse;
+import cl.duoc.sumativa1.app.parted.model.SalesResponse;
 import cl.duoc.sumativa1.app.parted.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -75,7 +76,17 @@ public class SalesController {
     }
 
     @GetMapping("/earnings")
-    public ResponseEntity<List<Sale>> getEarnings() {
-        return ResponseEntity.ok(saleService.getAllSales());
+    public ResponseEntity<SalesResponse> getEarnings() {
+        try {
+            if (saleService.getAllSales().isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SalesResponse("No se encontraron ventas", null));
+            }
+            return ResponseEntity.ok(new SalesResponse("Success", saleService.getAllSales()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SalesResponse("Error al obtener todas las ventas " + e.getMessage(), null));
+        }
+
     }
 }
