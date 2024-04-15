@@ -1,6 +1,8 @@
 package cl.duoc.sumativa1.app.parted.service;
 
 import cl.duoc.sumativa1.app.parted.model.Sale;
+import cl.duoc.sumativa1.app.parted.repository.SaleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,6 +14,13 @@ import java.util.List;
 
 @Service
 public class SaleServiceImpl implements SaleService {
+
+    private final SaleRepository saleRepository;
+
+    @Autowired
+    public SaleServiceImpl(SaleRepository saleRepository) {
+        this.saleRepository = saleRepository;
+    }
 
     @Override
     public List<Sale> getDailyEarnings(LocalDate date) {
@@ -41,7 +50,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAllSales() {
-        return getSales();
+        return saleRepository.findAll();
     }
 
     private List<Sale> getSales() {
