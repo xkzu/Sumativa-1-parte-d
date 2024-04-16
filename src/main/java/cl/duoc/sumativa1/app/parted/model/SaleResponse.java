@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 public class SaleResponse {
 
+    private String message;
+
     private List<Sale> sales;
 
     private Double totalEarnings;
