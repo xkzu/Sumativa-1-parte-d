@@ -9,6 +9,7 @@ import cl.duoc.sumativa1.app.parted.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SalesController {
@@ -159,6 +161,26 @@ public class SalesController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
                     new SaleSimpleResponse("Error al actualizar venta " + e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/earnings/delete/{id}")
+    public ResponseEntity<SaleSimpleResponse> deleteSale(@PathVariable Long id) {
+        try {
+            if (id < 1) {
+                return ResponseEntity.badRequest().body(
+                        new SaleSimpleResponse("id debe ser mayor a cero", null));
+            }
+            Optional<Sale> sale = saleService.getSaleById(id);
+            if (sale.isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SaleSimpleResponse("El id ingresado no existe en bd", null));
+            }
+            saleService.deleteSale(id);
+            return ResponseEntity.ok(new SaleSimpleResponse(Constant.SUCCESS, sale.get()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleSimpleResponse("Error al eliminar venta " + e.getMessage(), null));
         }
     }
 }
