@@ -43,9 +43,8 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getYearlyEarnings(Year year) {
-        return getSales().stream()
-                .filter(sale -> Year.from(sale.getSaleTime()).equals(year))
-                .toList();
+        int yearInt = year.getValue();
+        return saleRepository.findSalesByYear(yearInt);
     }
 
     @Override
