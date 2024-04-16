@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -133,6 +134,31 @@ public class SalesController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
                     new SaleSimpleResponse("Error al ingresar venta " + e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/earnings/update/{id}")
+    public ResponseEntity<SaleSimpleResponse> updateSale(@PathVariable Long id, @RequestBody Sale sale) {
+        try {
+            if (id < 1) {
+                return ResponseEntity.badRequest().body(
+                        new SaleSimpleResponse("id no puede ser menor a 1", null));
+            }
+            if (saleService.getSaleById(id).isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SaleSimpleResponse("El id ingresado no se encuentra en bd", null));
+            }
+            if (sale.getAmount() <= 0 || sale.getProductName().isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        new SaleSimpleResponse(
+                                "El monto debe ser mayor a cero y el nombre del producto no puede ser null ni vacio",
+                                null));
+            }
+            sale.setId(id);
+            return ResponseEntity.ok(new SaleSimpleResponse(Constant.SUCCESS, saleService.updateSale(sale)));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleSimpleResponse("Error al actualizar venta " + e.getMessage(), null));
         }
     }
 }
