@@ -36,9 +36,8 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getMonthlyEarnings(YearMonth yearMonth) {
-        return getSales().stream()
-                .filter(sale -> YearMonth.from(sale.getSaleTime()).equals(yearMonth))
-                .toList();
+        int month = yearMonth.getMonthValue();
+        return saleRepository.findSalesByMonth(month);
     }
 
     @Override
