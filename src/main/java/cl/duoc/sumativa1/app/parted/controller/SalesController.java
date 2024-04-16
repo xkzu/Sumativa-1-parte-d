@@ -2,6 +2,7 @@ package cl.duoc.sumativa1.app.parted.controller;
 
 import cl.duoc.sumativa1.app.parted.model.Sale;
 import cl.duoc.sumativa1.app.parted.model.SaleResponse;
+import cl.duoc.sumativa1.app.parted.model.SaleSimpleResponse;
 import cl.duoc.sumativa1.app.parted.model.SalesResponse;
 import cl.duoc.sumativa1.app.parted.service.SaleService;
 import cl.duoc.sumativa1.app.parted.util.Constant;
@@ -10,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -115,5 +118,21 @@ public class SalesController {
                     new SalesResponse("Error al obtener todas las ventas " + e.getMessage(), null));
         }
 
+    }
+
+    @PostMapping("/earnings/add")
+    public ResponseEntity<SaleSimpleResponse> addSale(@RequestBody Sale sale) {
+        try {
+            if (sale.getAmount() <= 0 || sale.getProductName().isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        new SaleSimpleResponse(
+                                "El monto debe ser mayor a cero y el nombre del producto no puede ser null ni vacio",
+                                null));
+            }
+            return ResponseEntity.ok(new SaleSimpleResponse(Constant.SUCCESS, saleService.addSale(sale)));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleSimpleResponse("Error al ingresar venta " + e.getMessage(), null));
+        }
     }
 }
