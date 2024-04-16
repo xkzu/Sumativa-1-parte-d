@@ -61,4 +61,9 @@ public class SaleServiceImpl implements SaleService {
         return saleRepository.findById(id);
     }
 
+    @Override
+    public void deleteSale(Long id) {
+        saleRepository.deleteById(id);
+    }
+
 }
