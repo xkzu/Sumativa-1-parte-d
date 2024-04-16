@@ -45,4 +45,9 @@ public class SaleServiceImpl implements SaleService {
         return saleRepository.findAll();
     }
 
+    @Override
+    public Sale addSale(Sale sale) {
+        return saleRepository.save(sale);
+    }
+
 }
