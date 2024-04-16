@@ -16,4 +16,6 @@ public interface SaleService {
     List<Sale> getYearlyEarnings(Year year);
 
     List<Sale> getAllSales();
+
+    Sale addSale(Sale sale);
 }
