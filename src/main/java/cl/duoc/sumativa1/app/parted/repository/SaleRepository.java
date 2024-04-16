@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
 
-    @Query(value = "SELECT s FROM Sale s WHERE EXTRACT(YEAR FROM s.saleTime) = :year", nativeQuery = false)
+    @Query(value = "SELECT s FROM Sale s WHERE EXTRACT(YEAR FROM s.saleTime) = :year")
     List<Sale> findSalesByYear(int year);
+
+    @Query(value = "SELECT s FROM Sale s WHERE EXTRACT(MONTH FROM s.saleTime) = :month")
+    List<Sale> findSalesByMonth(int month);
 }
