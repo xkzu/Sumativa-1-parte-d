@@ -37,17 +37,26 @@ public class SalesController {
     public ResponseEntity<SaleResponse> getDailyEarnings(
             //se le asigna el formato de la fecha que se requiere como argumento
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        try {
+            if (saleService.getDailyEarnings(date).isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SaleResponse("No se encontraron ventas diarias", null, null));
+            }
+            //se obtienen las ventas desde el service
+            List<Sale> dailySales = saleService.getDailyEarnings(date);
 
-        //se obtienen las ventas desde el service
-        List<Sale> dailySales = saleService.getDailyEarnings(date);
+            //se calculan las ventas para dar un total ganado
+            double totalEarnings = dailySales.stream()
+                    .mapToDouble(Sale::getAmount)
+                    .sum();
 
-        //se calculan las ventas para dar un total ganado
-        double totalEarnings = dailySales.stream()
-                .mapToDouble(Sale::getAmount)
-                .sum();
+            //se retorna con respuesta 200
+            return ResponseEntity.ok(new SaleResponse(Constant.SUCCESS, dailySales, totalEarnings));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleResponse("Error al obtener las ganancias diarias " + e.getMessage(), null, null));
+        }
 
-        //se retorna con respuesta 200
-        return ResponseEntity.ok(new SaleResponse("", dailySales, totalEarnings));
     }
 
     @GetMapping("/earnings/monthly/{month}")
