@@ -5,13 +5,11 @@ import lombok.Data;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Data
-public class SaleResponse {
+@AllArgsConstructor
+public class SalesResponse {
 
     private String message;
 
-    private List<Sale> sales;
-
-    private Double totalEarnings;
+    List<Sale> sales;
 }
