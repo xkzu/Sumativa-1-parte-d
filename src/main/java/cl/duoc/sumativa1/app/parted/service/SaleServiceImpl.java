@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SaleServiceImpl implements SaleService {
@@ -48,6 +49,16 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Sale addSale(Sale sale) {
         return saleRepository.save(sale);
+    }
+
+    @Override
+    public Sale updateSale(Sale sale) {
+        return saleRepository.saveAndFlush(sale);
+    }
+
+    @Override
+    public Optional<Sale> getSaleById(Long id) {
+        return saleRepository.findById(id);
     }
 
 }
