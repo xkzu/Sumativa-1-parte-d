@@ -4,6 +4,7 @@ import cl.duoc.sumativa1.app.parted.model.Sale;
 import cl.duoc.sumativa1.app.parted.model.SaleResponse;
 import cl.duoc.sumativa1.app.parted.model.SalesResponse;
 import cl.duoc.sumativa1.app.parted.service.SaleService;
+import cl.duoc.sumativa1.app.parted.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -52,14 +53,22 @@ public class SalesController {
     @GetMapping("/earnings/monthly/{month}")
     public ResponseEntity<SaleResponse> getMonthlyEarnings(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth month) {
+        try {
+            if (saleService.getMonthlyEarnings(month).isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SaleResponse("No se encontraron ganancias mensuales", null, null));
+            }
+            List<Sale> monthlySales = saleService.getMonthlyEarnings(month);
 
-        List<Sale> monthlySales = saleService.getMonthlyEarnings(month);
+            double totalEarnings = monthlySales.stream()
+                    .mapToDouble(Sale::getAmount)
+                    .sum();
 
-        double totalEarnings = monthlySales.stream()
-                .mapToDouble(Sale::getAmount)
-                .sum();
-
-        return ResponseEntity.ok(new SaleResponse("", monthlySales, totalEarnings));
+            return ResponseEntity.ok(new SaleResponse(Constant.SUCCESS, monthlySales, totalEarnings));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleResponse("Error al obtener ganancias mensuales " + e.getMessage(), null, null));
+        }
     }
 
     @GetMapping("/earnings/yearly/{year}")
@@ -76,7 +85,7 @@ public class SalesController {
                     .mapToDouble(Sale::getAmount)
                     .sum();
 
-            return ResponseEntity.ok(new SaleResponse("Success", yearlyEarnings, totalEarnings));
+            return ResponseEntity.ok(new SaleResponse(Constant.SUCCESS, yearlyEarnings, totalEarnings));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
                     new SaleResponse("Error al obtener ganancias anuales " + e.getMessage(), null, null));
@@ -91,7 +100,7 @@ public class SalesController {
                 return ResponseEntity.ofNullable(
                         new SalesResponse("No se encontraron ventas", null));
             }
-            return ResponseEntity.ok(new SalesResponse("Success", saleService.getAllSales()));
+            return ResponseEntity.ok(new SalesResponse(Constant.SUCCESS, saleService.getAllSales()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
                     new SalesResponse("Error al obtener todas las ventas " + e.getMessage(), null));
