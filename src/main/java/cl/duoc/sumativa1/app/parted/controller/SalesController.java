@@ -46,7 +46,7 @@ public class SalesController {
                 .sum();
 
         //se retorna con respuesta 200
-        return ResponseEntity.ok(new SaleResponse(dailySales, totalEarnings));
+        return ResponseEntity.ok(new SaleResponse("", dailySales, totalEarnings));
     }
 
     @GetMapping("/earnings/monthly/{month}")
@@ -59,20 +59,29 @@ public class SalesController {
                 .mapToDouble(Sale::getAmount)
                 .sum();
 
-        return ResponseEntity.ok(new SaleResponse(monthlySales, totalEarnings));
+        return ResponseEntity.ok(new SaleResponse("", monthlySales, totalEarnings));
     }
 
     @GetMapping("/earnings/yearly/{year}")
     public ResponseEntity<SaleResponse> getYearlyEarnings(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM") Year year) {
+            @PathVariable @DateTimeFormat(pattern = "yyyy") Year year) {
+        try {
+            if (saleService.getYearlyEarnings(year).isEmpty()) {
+                return ResponseEntity.ofNullable(
+                        new SaleResponse("No se encontraron ventas", null, null));
+            }
+            List<Sale> yearlyEarnings = saleService.getYearlyEarnings(year);
 
-        List<Sale> monthlySales = saleService.getYearlyEarnings(year);
+            double totalEarnings = yearlyEarnings.stream()
+                    .mapToDouble(Sale::getAmount)
+                    .sum();
 
-        double totalEarnings = monthlySales.stream()
-                .mapToDouble(Sale::getAmount)
-                .sum();
+            return ResponseEntity.ok(new SaleResponse("Success", yearlyEarnings, totalEarnings));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                    new SaleResponse("Error al obtener ganancias anuales " + e.getMessage(), null, null));
+        }
 
-        return ResponseEntity.ok(new SaleResponse(monthlySales, totalEarnings));
     }
 
     @GetMapping("/earnings")
