@@ -6,3 +6,5 @@ cl\duoc\sumativa1\app\parted\repository\SaleRepository.class
 cl\duoc\sumativa1\app\parted\model\Sale.class
 cl\duoc\sumativa1\app\parted\model\SalesResponse.class
 cl\duoc\sumativa1\app\parted\service\SaleService.class
+cl\duoc\sumativa1\app\parted\model\SaleSimpleResponse.class
+cl\duoc\sumativa1\app\parted\util\Constant.class
