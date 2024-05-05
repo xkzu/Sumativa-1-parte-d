@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: cl.duoc.sumativa1.app.parted.repository.SaleRepositoryTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.435 s -- in cl.duoc.sumativa1.app.parted.repository.SaleRepositoryTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.694 s -- in cl.duoc.sumativa1.app.parted.repository.SaleRepositoryTest
