@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,4 +51,19 @@ class SaleRepositoryTest {
         assertNotNull(sales);
         assertFalse(sales.isEmpty());
     }
+
+    @Test
+    void getAllSales() {
+        List<Sale> sales = saleRepository.findAll();
+        assertNotNull(sales);
+        assertFalse(sales.isEmpty());
+    }
+
+    @Test
+    void getSaleById() {
+    Optional<Sale> sale = saleRepository.findById(1L);
+    assertNotNull(sale);
+    assertFalse(sale.isEmpty());
+    }
+
 }
